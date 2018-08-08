@@ -1,0 +1,53 @@
+---
+metadata:
+  name: linux-amd64
+
+platform:
+  name: linux/amd64
+
+pipeline:
+- test:
+    image: golang:1.10
+    commands:
+    - cd posix
+    - tar -xf fixtures.tar -C /
+    - go test -v
+
+- publish:
+    image: plugins/docker
+    dockerfile: docker/Dockerfile.linux.amd64
+    repo: drone/git
+    auto_tag: true
+    auto_tag_suffix: linux-amd64
+    dry_run: true
+    when:
+      event:
+      - push
+      - tag
+
+---
+metadata:
+  name: linux-arm64
+
+platform:
+  name: linux/arm64
+
+pipeline:
+  test:
+    image: arm64v8/golang:1.10
+    commands:
+    - cd posix
+    - tar -xf fixtures.tar -C /
+    - go test -v
+
+  publish:
+    image: plugins/docker:linux-arm64
+    dockerfile: docker/Dockerfile.linux.arm64
+    repo: drone/git
+    auto_tag: true
+    auto_tag_suffix: linux-arm64
+    dry_run: true
+    when:
+      event:
+      - push
+      - tag

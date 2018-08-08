@@ -1,0 +1,56 @@
+#!/bin/sh
+
+if [[ ! -z "${DRONE_WORKSPACE}" ]]; then
+	cd ${DRONE_WORKSPACE}
+fi
+
+# if the netrc enviornment variables exist, write
+# the netrc file.
+
+if [[ ! -z "${DRONE_NETRC_MACHINE}" ]]; then
+	cat <<EOF > /root/.netrc
+machine ${DRONE_NETRC_MACHINE}
+login ${DRONE_NETRC_USERNAME}
+password ${DRONE_NETRC_PASSWORD}
+EOF
+fi
+
+# if the ssh_key environment variable exists, write
+# the ssh key and add the netrc machine to the
+# known hosts file.
+
+if [[ ! -z "${SSH_KEY}" ]]; then
+	mkdir /root/.ssh
+	echo -n "$SSH_KEY" > /root/.ssh/id_rsa
+	chmod 600 /root/.ssh/id_rsa
+
+	touch /root/.ssh/known_hosts
+	chmod 600 /root/.ssh/known_hosts
+	ssh-keyscan -H ${DRONE_NETRC_MACHINE} > /etc/ssh/ssh_known_hosts 2> /dev/null
+fi
+
+# configure git global behavior and parameters via the
+# following environment variables:
+
+export GIT_AUTHOR_NAME=${DRONE_COMMIT_AUTHOR_NAME=drone}
+export GIT_AUTHOR_EMAIL=${DRONE_COMMIT_AUTHOR_EMAIL=drone@localhost}
+export GIT_COMMITTER_NAME=${GIT_AUTHOR_NAME}
+export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
+# GIT_SSL_NO_VERIFY=
+
+
+# invoke the sub-script based on the drone event type.
+# TODO we should ultimately look at the ref, since
+# we need something compatible with deployment events.
+
+case $DRONE_BUILD_EVENT in
+pull_request)
+	clone-pull-request
+	;;
+tag)
+	clone-tag
+	;;
+*)
+	clone-commit
+	;;
+esac

@@ -1,0 +1,7 @@
+.github
+.gitignore
+.drone.yml
+LICENSE
+README.md
+*/fixtures*
+*.go
