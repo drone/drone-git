@@ -33,14 +33,14 @@ platform:
   name: linux/arm64
 
 pipeline:
-  test:
+- test:
     image: arm64v8/golang:1.10
     commands:
     - cd posix
     - tar -xf fixtures.tar -C /
     - go test -v
 
-  publish:
+- publish:
     image: plugins/docker:linux-arm64
     dockerfile: docker/Dockerfile.linux.arm64
     repo: drone/git
