@@ -32,7 +32,14 @@ metadata:
 platform:
   name: linux/arm64
 
+clone:
+  disable: true
+
 pipeline:
+- clone:
+    image: arm64v8/golang:1.10
+    commands:
+    - git clone https://github.com/drone/drone-git.git .
 - test:
     image: arm64v8/golang:1.10
     commands:
