@@ -17,8 +17,6 @@ pipeline:
     image: plugins/docker
     dockerfile: docker/Dockerfile.linux.amd64
     repo: drone/git
-    auto_tag: true
-    auto_tag_suffix: linux-amd64
     secrets:
     - docker_username
     - docker_password
@@ -56,6 +54,43 @@ pipeline:
     repo: drone/git
     auto_tag: true
     auto_tag_suffix: linux-arm64
+    secrets:
+    - docker_username
+    - docker_password
+    when:
+      event:
+      - push
+      - tag
+
+secrets:
+  docker_username:
+    external:
+      name: drone/docker#username
+  docker_password:
+    external:
+      name: drone/docker#password
+
+---
+metadata:
+  name: linux-arm
+
+platform:
+  name: linux/arm
+
+pipeline:
+- test:
+    image: arm32v7/golang:1.10.3
+    commands:
+    - cd posix
+    - tar -xf fixtures.tar -C /
+    - go test -v
+
+- publish:
+    image: plugins/docker:linux-arm
+    dockerfile: docker/Dockerfile.linux.arm
+    repo: drone/git
+    auto_tag: true
+    auto_tag_suffix: linux-arm
     secrets:
     - docker_username
     - docker_password
