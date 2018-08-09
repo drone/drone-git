@@ -19,11 +19,21 @@ pipeline:
     repo: drone/git
     auto_tag: true
     auto_tag_suffix: linux-amd64
-    dry_run: true
+    secrets:
+    - docker_username
+    - docker_password
     when:
       event:
       - push
       - tag
+
+secrets:
+  docker_username:
+    external:
+      name: drone/docker#username
+  docker_password:
+    external:
+      name: drone/docker#password
 
 ---
 metadata:
@@ -53,8 +63,18 @@ pipeline:
     repo: drone/git
     auto_tag: true
     auto_tag_suffix: linux-arm64
-    dry_run: true
+    secrets:
+    - docker_username
+    - docker_password
     when:
       event:
       - push
       - tag
+
+secrets:
+  docker_username:
+    external:
+      name: drone/docker#username
+  docker_password:
+    external:
+      name: drone/docker#password
