@@ -1,5 +1,9 @@
 $ErrorActionPreference = 'Stop';
 
+# HACK: no clue how to set the PATH inside the Dockerfile,
+# so am setting it here instead. This is not idea.
+$Env:PATH += ';C:\git\cmd;C:\git\mingw64\bin;C:\git\usr\bin'
+
 # if the workspace is set we should make sure
 # it is the current working directory.
 
@@ -46,15 +50,15 @@ $Env:GIT_COMMITTER_EMAIL = $Env:GIT_AUTHOR_EMAIL
 
 switch ($Env:DRONE_BUILD_EVENT) {
     "pull_request" {
-        .\clone-pull-reqest.ps1
+        Invoke-Expression "${PSScriptRoot}\clone-pull-reqest.ps1"
         break
     }
     "tag" {
-        .\clone-tag.ps1
+        Invoke-Expression "${PSScriptRoot}\clone-tag.ps1"
         break
     }
     default {
-        .\clone-commit.ps1
+        Invoke-Expression "${PSScriptRoot}\clone-commit.ps1"
         break
     }
 }
