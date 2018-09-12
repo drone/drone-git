@@ -5,10 +5,14 @@ RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tl
     Invoke-WebRequest -UseBasicParsing https://github.com/git-for-windows/git/releases/download/v2.19.0-rc2.windows.1/MinGit-2.19.0.rc2.windows.1-64-bit.zip -OutFile git.zip; \
     Expand-Archive git.zip -DestinationPath C:\git
 
-FROM microsoft/windowsservercore:1803 
+FROM microsoft/powershell:nanoserver-1803 
 COPY --from=git /git /git
 
 ADD windows/* /bin/
 
-SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-CMD [ "powershell", "C:\\bin\\clone.ps1" ]
+# https://github.com/PowerShell/PowerShell/issues/6211#issuecomment-367477137
+USER ContainerAdministrator
+RUN setx /M PATH "%PATH%;C:\Program Files\PowerShell"
+
+SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+CMD [ "pwsh", "C:\\bin\\clone.ps1" ]
