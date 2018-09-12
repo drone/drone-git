@@ -14,5 +14,7 @@ ADD windows/* /bin/
 USER ContainerAdministrator
 RUN setx /M PATH "%PATH%;C:\Program Files\PowerShell"
 
+ENV HOME C:\\Users\\ContainerAdministrator
+
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 CMD [ "pwsh", "C:\\bin\\clone.ps1" ]
