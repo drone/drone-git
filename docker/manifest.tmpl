@@ -1,0 +1,31 @@
+image: drone/git:latest
+manifests:
+  -
+    image: drone/git:linux-amd64
+    platform:
+      architecture: amd64
+      os: linux
+  -
+    image: drone/git:linux-arm64
+    platform:
+      variant: v8
+      architecture: arm64
+      os: linux
+  -
+    image: drone/git:linux-arm
+    platform:
+      variant: v7
+      architecture: arm
+      os: linux
+  -
+    image: drone/git:linux-arm
+    platform:
+      variant: v6
+      architecture: arm
+      os: linux
+  -
+    image: drone/git:windows-1803
+    platform:
+      architecture: arm
+      os: linux
+      os.version: 10.0.17134.165

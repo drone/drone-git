@@ -1,108 +1,130 @@
 ---
-metadata:
-  name: linux-amd64
+kind: pipeline
+name: linux-amd64
 
 platform:
-  name: linux/amd64
+  os: linux
+  arch: amd64
 
-pipeline:
-- test:
-    image: golang:1.10
-    commands:
-    - cd posix
-    - tar -xf fixtures.tar -C /
-    - go test -v
+steps:
+- name: test
+  image: golang:1.10
+  commands:
+  - cd posix
+  - tar -xf fixtures.tar -C /
+  - go test -v
 
-- publish:
-    image: plugins/docker
+- image: plugins/docker
+  settings:
+    auto_tag: true
+    auto_tag_suffix: linux-amd64
     dockerfile: docker/Dockerfile.linux.amd64
+    password:
+      $secret: password
     repo: drone/git
-    secrets:
-    - docker_username
-    - docker_password
-    when:
-      event:
-      - push
-      - tag
-
-secrets:
-  docker_username:
-    external:
-      name: drone/docker#username
-  docker_password:
-    external:
-      name: drone/docker#password
+    username:
+      $secret: username
+  when:
+    event:
+    - push
+    - tag
 
 ---
-metadata:
-  name: linux-arm64
+kind: pipeline
+name: linux-arm64
 
 platform:
-  name: linux/arm64
+  os: linux
+  arch: arm64
 
-pipeline:
-- test:
-    image: arm64v8/golang:1.10
-    commands:
-    - cd posix
-    - tar -xf fixtures.tar -C /
-    - go test -v
+steps:
+- name: test
+  image: golang:1.10
+  commands:
+  - cd posix
+  - tar -xf fixtures.tar -C /
+  - go test -v
 
-- publish:
-    image: plugins/docker:linux-arm64
-    dockerfile: docker/Dockerfile.linux.arm64
-    repo: drone/git
+- image: plugins/docker:linux-arm64
+  settings:
     auto_tag: true
     auto_tag_suffix: linux-arm64
-    secrets:
-    - docker_username
-    - docker_password
-    when:
-      event:
-      - push
-      - tag
-
-secrets:
-  docker_username:
-    external:
-      name: drone/docker#username
-  docker_password:
-    external:
-      name: drone/docker#password
+    dockerfile: docker/Dockerfile.linux.arm64
+    password:
+      $secret: password
+    repo: drone/git
+    username:
+      $secret: username
+  when:
+    event:
+    - push
+    - tag
 
 ---
-metadata:
-  name: linux-arm
+kind: pipeline
+name: linux-arm
 
 platform:
-  name: linux/arm
+  os: linux
+  arch: arm
 
-pipeline:
-- test:
-    image: arm32v7/golang:1.10.3
-    commands:
-    - cd posix
-    - tar -xf fixtures.tar -C /
-    - go test -v
+steps:
+- name: test
+  image: golang:1.10
+  commands:
+  - cd posix
+  - tar -xf fixtures.tar -C /
+  - go test -v
 
-- publish:
-    image: plugins/docker:linux-arm
-    dockerfile: docker/Dockerfile.linux.arm
-    repo: drone/git
+- image: plugins/docker:linux-arm
+  settings:
     auto_tag: true
     auto_tag_suffix: linux-arm
-    secrets:
-    - docker_username
-    - docker_password
-    when:
-      event:
-      - push
-      - tag
+    dockerfile: docker/Dockerfile.linux.arm
+    password:
+      $secret: password
+    repo: drone/git
+    username:
+      $secret: username
+  when:
+    event:
+    - push
+    - tag
 
-secrets:
-  docker_username:
-    external:
-      name: drone/docker#username
-  docker_password:
-    external:
-      name: drone/docker#password
+---
+kind: pipeline
+name: after
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: manifest
+  image: plugins/manifest:1
+  settings:
+    ignore_missing: true
+    password:
+      $secret: password
+    spec: docker/manifest.tmpl
+    username:
+      $secret: username
+  when:
+    branch:
+    - master
+    event:
+    - push
+
+depends_on:
+- linux-arm
+- linux-arm64
+- linux-amd64
+
+---
+kind: secret
+type: external
+data:
+  password: "drone/docker#password"
+  username: "drone/docker#username"
+
+...
