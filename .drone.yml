@@ -14,7 +14,8 @@ steps:
   - tar -xf fixtures.tar -C /
   - go test -v
 
-- image: plugins/docker
+- name: push
+  image: plugins/docker
   settings:
     auto_tag: true
     auto_tag_suffix: linux-amd64
@@ -45,7 +46,8 @@ steps:
   - tar -xf fixtures.tar -C /
   - go test -v
 
-- image: plugins/docker:linux-arm64
+- name: push
+  image: plugins/docker:linux-arm64
   settings:
     auto_tag: true
     auto_tag_suffix: linux-arm64
@@ -76,7 +78,8 @@ steps:
   - tar -xf fixtures.tar -C /
   - go test -v
 
-- image: plugins/docker:linux-arm
+- name: push
+  image: plugins/docker:linux-arm
   settings:
     auto_tag: true
     auto_tag_suffix: linux-arm
