@@ -23,8 +23,7 @@ steps:
     password:
       $secret: password
     repo: drone/git
-    username:
-      $secret: username
+    username: drone
   when:
     event:
     - push
@@ -55,8 +54,7 @@ steps:
     password:
       $secret: password
     repo: drone/git
-    username:
-      $secret: username
+    username: drone
   when:
     event:
     - push
@@ -87,8 +85,7 @@ steps:
     password:
       $secret: password
     repo: drone/git
-    username:
-      $secret: username
+    username: drone
   when:
     event:
     - push
@@ -110,8 +107,7 @@ steps:
     password:
       $secret: password
     spec: docker/manifest.tmpl
-    username:
-      $secret: username
+    username: drone
   when:
     branch:
     - master
