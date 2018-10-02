@@ -149,61 +149,74 @@ func TestTags(t *testing.T) {
 func TestPullRequest(t *testing.T) {
 	remote := "https://github.com/octocat/Spoon-Knife.git"
 
-	local, err := ioutil.TempDir("", "test")
+	base, err := ioutil.TempDir("", "test")
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	defer os.Remove(local)
+	defer os.Remove(base)
 
-	bin, err := filepath.Abs("clone-pull-request")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	for i, test := range testsPR {
+		local := filepath.Join(base, fmt.Sprint(i))
+		err = os.MkdirAll(local, 0777)
+		if err != nil {
+			t.Error(err)
+			return
+		}
 
-	cmd := exec.Command(bin)
-	cmd.Dir = local
-	cmd.Env = []string{
-		fmt.Sprintf("DRONE_COMMIT_REF=%s", "refs/pull/14596/head"),
-		fmt.Sprintf("DRONE_COMMIT_BRANCH=%s", "master"),
-		fmt.Sprintf("DRONE_COMMIT_SHA=%s", "26923a8f37933ccc23943de0d4ebd53908268582"),
-		fmt.Sprintf("DRONE_WORKSPACE=%s", local),
-		fmt.Sprintf("DRONE_REMOTE_URL=%s", remote),
-	}
+		bin, err := filepath.Abs("clone-pull-request")
+		if err != nil {
+			t.Error(err)
+			return
+		}
 
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		t.Error(err)
-		t.Log(string(out))
-		return
-	}
+		cmd := exec.Command(bin)
+		cmd.Dir = local
+		cmd.Env = []string{
+			fmt.Sprintf("DRONE_COMMIT_REF=refs/pull/%s/head", test.pull_request),
+			fmt.Sprintf("DRONE_COMMIT_BRANCH=%s", test.branch),
+			fmt.Sprintf("DRONE_COMMIT_SHA=%s", test.commit),
+			fmt.Sprintf("DRONE_WORKSPACE=%s", local),
+			fmt.Sprintf("DRONE_REMOTE_URL=%s", remote),
+		}
 
-	commit, err := getCommit(local)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			t.Error(err)
+			t.Log(string(out))
+			return
+		}
 
-	branch, err := getBranch(local)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+		head_commit, err := getCommit(local)
+		if err != nil {
+			t.Error(err)
+			return
+		}
 
-	if want, got := "26923a8f37933ccc23943de0d4ebd53908268582", commit; got != want {
-		t.Errorf("Want commit %s, got %s", want, got)
-	}
+		branch, err := getBranch(local)
+		if err != nil {
+			t.Error(err)
+			return
+		}
 
-	if want, got := "master", branch; got != want {
-		t.Errorf("Want branch %s, got %s", want, got)
-	}
+		// The local repo HEAD must be the PR destination branch's local checkout
+		if want, got := test.branch, branch; got != want {
+			t.Errorf("Want branch %s, got %s", want, got)
+		}
 
-	file := filepath.Join(local, "directory/file.txt")
-	out, err = ioutil.ReadFile(file)
-	if err != nil {
-		t.Error(err)
-		return
+		if test.require_ff {
+			// Require a fast-forward merge if the PR source branch is a descendant of the PR destination branch
+			if want, got := test.commit, head_commit; got != want {
+				t.Errorf("Want commit %s, got %s", want, got)
+			}
+		}
+
+		file := filepath.Join(local, "directory/file.txt")
+		out, err = ioutil.ReadFile(file)
+		if err != nil {
+			t.Error(err)
+			return
+		}
 	}
 }
 
@@ -255,5 +268,19 @@ var tests = []struct {
 		tag:    "v2.1.0",
 		file:   "hello.txt",
 		text:   "bonjour monde\n",
+	},
+}
+
+var testsPR = []struct {
+	pull_request string
+	branch       string
+	commit       string
+	require_ff   bool
+}{
+	{
+		pull_request: "14596",
+		branch:       "master",
+		commit:       "26923a8f37933ccc23943de0d4ebd53908268582",
+		require_ff:   true,
 	},
 }
