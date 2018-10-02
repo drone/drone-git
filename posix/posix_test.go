@@ -178,6 +178,10 @@ func TestPullRequest(t *testing.T) {
 			fmt.Sprintf("DRONE_COMMIT_SHA=%s", test.commit),
 			fmt.Sprintf("DRONE_WORKSPACE=%s", local),
 			fmt.Sprintf("DRONE_REMOTE_URL=%s", remote),
+			fmt.Sprintf("GIT_AUTHOR_NAME=%s", "drone"),
+			fmt.Sprintf("GIT_AUTHOR_EMAIL=%s", "drone@localhost"),
+			fmt.Sprintf("GIT_COMMITTER_NAME=%s", "drone"),
+			fmt.Sprintf("GIT_COMMITTER_EMAIL=%s", "drone@localhost"),
 		}
 
 		out, err := cmd.CombinedOutput()
@@ -209,6 +213,11 @@ func TestPullRequest(t *testing.T) {
 			if want, got := test.commit, head_commit; got != want {
 				t.Errorf("Want commit %s, got %s", want, got)
 			}
+		} else {
+			// Otherwise the PR branch's HEAD must still be an ancestor of the local repo HEAD
+			if !checkAncestry(local, test.commit, head_commit) {
+				t.Errorf("PR branch HEAD %s is not an ancestor of local HEAD %s", test.commit, head_commit)
+			}
 		}
 
 		file := filepath.Join(local, "directory/file.txt")
@@ -232,6 +241,13 @@ func getCommit(path string) (string, error) {
 	cmd.Dir = path
 	out, err := cmd.CombinedOutput()
 	return strings.TrimSpace(string(out)), err
+}
+
+func checkAncestry(path string, ancestor string, descendant string) (bool) {
+	cmd := exec.Command("git", "merge-base", "--is-ancestor", ancestor, descendant)
+	cmd.Dir = path
+	_, err := cmd.CombinedOutput()
+	return err == nil
 }
 
 var tests = []struct {
@@ -282,5 +298,11 @@ var testsPR = []struct {
 		branch:       "master",
 		commit:       "26923a8f37933ccc23943de0d4ebd53908268582",
 		require_ff:   true,
+	},
+	{
+		pull_request: "16667",
+		branch:       "master",
+		commit:       "e8d96e48cffd34479c3ecd0410d98c70ee9bbd7f",
+		require_ff:   false,
 	},
 }
