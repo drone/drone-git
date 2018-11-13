@@ -43,7 +43,12 @@ export GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL}
 # TODO we should ultimately look at the ref, since
 # we need something compatible with deployment events.
 
-case $DRONE_BUILD_EVENT in
+CLONE_TYPE=$DRONE_BUILD_EVENT
+case $DRONE_COMMIT_REF in
+  refs/tags/* ) CLONE_TYPE=tag ;;
+esac
+
+case $CLONE_TYPE in
 pull_request)
 	clone-pull-request
 	;;
