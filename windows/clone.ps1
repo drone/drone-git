@@ -15,11 +15,11 @@ if ($Env:DRONE_WORKSPACE) {
 # the netrc file.
 
 if ($Env:DRONE_NETRC_MACHINE) {
-
-$netrc=[string]::Format("{0}\_netrc",$Env:HOME);
-"machine $Env:CI_NETRC_MACHINE" >> $netrc;
-"login $Env:CI_NETRC_USERNAME" >> $netrc;
-"password $Env:CI_NETRC_PASSWORD" >> $netrc;
+@"
+machine $Env:DRONE_NETRC_MACHINE
+login $Env:DRONE_NETRC_USERNAME
+password $Env:DRONE_NETRC_PASSWORD
+"@ > (Join-Path $Env:USERPROFILE '_netrc');
 }
 
 # configure git global behavior and parameters via the
