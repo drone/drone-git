@@ -13,5 +13,5 @@ fi
 set -e
 set -x
 
-git fetch ${FLAGS} origin +refs/heads/${DRONE_COMMIT_BRANCH}:
+git fetch -v ${FLAGS} origin ${DRONE_COMMIT_SHA}:
 git checkout ${DRONE_COMMIT_SHA} -b ${DRONE_COMMIT_BRANCH}
