@@ -1,11 +1,13 @@
-FROM microsoft/windowsservercore:1709 AS git
+# escape=`
+
+FROM mcr.microsoft.com/windows/servercore:1809 AS git
 SHELL ["powershell.exe", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; \
-    Invoke-WebRequest -UseBasicParsing https://github.com/git-for-windows/git/releases/download/v2.19.0-rc2.windows.1/MinGit-2.19.0.rc2.windows.1-64-bit.zip -OutFile git.zip; \
-    Expand-Archive git.zip -DestinationPath C:\git
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
+    Invoke-WebRequest -UseBasicParsing https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/MinGit-2.21.0-64-bit.zip -OutFile git.zip; `
+    Expand-Archive git.zip -DestinationPath C:\git;
 
-FROM microsoft/powershell:nanoserver-1709 
+FROM mcr.microsoft.com/powershell:nanoserver-1809
 COPY --from=git /git /git
 
 ADD windows/* /bin/

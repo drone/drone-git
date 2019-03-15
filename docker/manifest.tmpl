@@ -24,8 +24,14 @@ manifests:
       architecture: arm
       os: linux
   -
-    image: drone/git:windows-1803
+    image: drone/git:windows-1803-amd64
     platform:
-      architecture: arm
-      os: linux
-      os.version: 10.0.17134.165
+      architecture: amd64
+      os: windows
+      version: 1803
+  -
+    image: drone/git:windows-1809-amd64
+    platform:
+      architecture: amd64
+      os: windows
+      version: 1809
