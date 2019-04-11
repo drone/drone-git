@@ -50,7 +50,7 @@ $Env:GIT_COMMITTER_EMAIL = $Env:GIT_AUTHOR_EMAIL
 
 switch ($Env:DRONE_BUILD_EVENT) {
     "pull_request" {
-        Invoke-Expression "${PSScriptRoot}\clone-pull-reqest.ps1"
+        Invoke-Expression "${PSScriptRoot}\clone-pull-request.ps1"
         break
     }
     "tag" {
