@@ -7,6 +7,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"log"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
@@ -31,7 +32,7 @@ func main() {
 		}
 		files = append(files, File{
 			Name: file,
-			Slug: strings.ReplaceAll(strings.Title(file), "-", ""),
+			Slug: slugify(file),
 			Data: string(out),
 		})
 	}
@@ -47,6 +48,15 @@ func main() {
 	}
 
 	ioutil.WriteFile(output, buf.Bytes(), 0644)
+}
+
+func slugify(s string) string {
+	ext := filepath.Ext(s)
+	s = strings.TrimSuffix(s, ext)
+	s = strings.Title(s)
+	s = strings.ReplaceAll(s, "-", "")
+	s = strings.ReplaceAll(s, "_", "")
+	return s
 }
 
 type stringSlice []string
@@ -73,5 +83,5 @@ var tmpl = template.Must(template.New("_").Parse(`package {{ .Package }}
 {{ range .Files -}}
 // Contents of {{ .Name }}
 const {{ .Slug }} = ` + "`{{ .Data }}`" + `
-{{ end }}
-`))
+
+{{ end -}}`))

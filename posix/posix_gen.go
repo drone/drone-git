@@ -72,6 +72,7 @@ tag)
 	;;
 esac
 `
+
 // Contents of clone-commit
 const CloneCommit = `#!/bin/sh
 
@@ -91,6 +92,7 @@ set -x
 git fetch ${FLAGS} origin +refs/heads/${DRONE_COMMIT_BRANCH}:
 git checkout ${DRONE_COMMIT_SHA} -b ${DRONE_COMMIT_BRANCH}
 `
+
 // Contents of clone-pull-request
 const ClonePullRequest = `#!/bin/sh
 
@@ -113,6 +115,7 @@ git checkout ${DRONE_COMMIT_BRANCH}
 git fetch origin ${DRONE_COMMIT_REF}:
 git merge ${DRONE_COMMIT_SHA}
 `
+
 // Contents of clone-tag
 const CloneTag = `#!/bin/sh
 
@@ -132,4 +135,3 @@ set -x
 git fetch ${FLAGS} origin +refs/tags/${DRONE_TAG}:
 git checkout -qf FETCH_HEAD
 `
-
