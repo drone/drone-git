@@ -29,13 +29,13 @@ if ($Env:PLUGIN_SKIP_VERIFY) {
     $Env:GIT_SSL_NO_VERIFY = "true"
 }
 
-if ($Env:DRONE_COMMIT_AUTHOR_NAME) {
+if ($Env:DRONE_COMMIT_AUTHOR_NAME -eq '' -or $Env:DRONE_COMMIT_AUTHOR_NAME -eq $null) {
     $Env:GIT_AUTHOR_NAME = $Env:DRONE_COMMIT_AUTHOR_NAME
 } else {
     $Env:GIT_AUTHOR_NAME = "drone"
 }
 
-if ($Env:DRONE_COMMIT_AUTHOR_NAME) {
+if ($Env:DRONE_COMMIT_AUTHOR_NAME -eq '' -or $Env:DRONE_COMMIT_AUTHOR_NAME -eq $null) {
     $Env:GIT_AUTHOR_NAME = $Env:DRONE_COMMIT_AUTHOR_NAME
 } else {
     $Env:GIT_AUTHOR_NAME = 'drone@localhost'
