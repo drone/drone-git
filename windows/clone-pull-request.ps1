@@ -13,4 +13,4 @@ git fetch $FLAGS origin "+refs/heads/${Env:DRONE_COMMIT_BRANCH}:"
 git checkout $Env:DRONE_COMMIT_BRANCH
 
 git fetch origin "${Env:DRONE_COMMIT_REF}:"
-git rebase $Env:DRONE_COMMIT_SHA
+git merge $Env:DRONE_COMMIT_SHA
