@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 
-## [1.0.1]
+## [1.1.0]
 ### Added
 
 - Ability to clone tags for promotion events from [@josmo](https://github.com/josme)
@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for windows 1803 from [@donny-dont](https://github.com/donny-dont)
 - Support for windows 1809 from [@donny-dont](https://github.com/donny-dont)
 
-### Changed
+### Fixed
 
 - Fixed error merging when missing email from [@bradrydzewski](https://github.com/bradrydzewski)
 - Fixed empty ref on windows from [@drpebcak](https://github.com/drpebcak)
