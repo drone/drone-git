@@ -30,15 +30,15 @@ if ($Env:PLUGIN_SKIP_VERIFY) {
 }
 
 if ($Env:DRONE_COMMIT_AUTHOR_NAME -eq '' -or $Env:DRONE_COMMIT_AUTHOR_NAME -eq $null) {
-    $Env:GIT_AUTHOR_NAME = $Env:DRONE_COMMIT_AUTHOR_NAME
-} else {
     $Env:GIT_AUTHOR_NAME = "drone"
+} else {
+    $Env:GIT_AUTHOR_NAME = $Env:DRONE_COMMIT_AUTHOR_NAME
 }
 
 if ($Env:DRONE_COMMIT_AUTHOR_EMAIL -eq '' -or $Env:DRONE_COMMIT_AUTHOR_EMAIL -eq $null) {
-    $Env:GIT_AUTHOR_EMAIL = $Env:DRONE_COMMIT_AUTHOR_EMAIL
-} else {
     $Env:GIT_AUTHOR_EMAIL = 'drone@localhost'
+} else {
+    $Env:GIT_AUTHOR_EMAIL = $Env:DRONE_COMMIT_AUTHOR_EMAIL
 }
 
 $Env:GIT_COMMITTER_NAME  = $Env:GIT_AUTHOR_NAME
