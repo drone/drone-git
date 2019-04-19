@@ -135,3 +135,4 @@ set -x
 git fetch ${FLAGS} origin +refs/tags/${DRONE_TAG}:
 git checkout -qf FETCH_HEAD
 `
+

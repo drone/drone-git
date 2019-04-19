@@ -34,16 +34,16 @@ if ($Env:PLUGIN_SKIP_VERIFY) {
     $Env:GIT_SSL_NO_VERIFY = "true"
 }
 
-if ($Env:DRONE_COMMIT_AUTHOR_NAME) {
-    $Env:GIT_AUTHOR_NAME = $Env:DRONE_COMMIT_AUTHOR_NAME
-} else {
+if ($Env:DRONE_COMMIT_AUTHOR_NAME -eq '' -or $Env:DRONE_COMMIT_AUTHOR_NAME -eq $null) {
     $Env:GIT_AUTHOR_NAME = "drone"
+} else {
+    $Env:GIT_AUTHOR_NAME = $Env:DRONE_COMMIT_AUTHOR_NAME
 }
 
-if ($Env:DRONE_COMMIT_AUTHOR_NAME) {
-    $Env:GIT_AUTHOR_NAME = $Env:DRONE_COMMIT_AUTHOR_NAME
+if ($Env:DRONE_COMMIT_AUTHOR_EMAIL -eq '' -or $Env:DRONE_COMMIT_AUTHOR_EMAIL -eq $null) {
+    $Env:GIT_AUTHOR_EMAIL = 'drone@localhost'
 } else {
-    $Env:GIT_AUTHOR_NAME = 'drone@localhost'
+    $Env:GIT_AUTHOR_EMAIL = $Env:DRONE_COMMIT_AUTHOR_EMAIL
 }
 
 $Env:GIT_COMMITTER_NAME  = $Env:GIT_AUTHOR_NAME
@@ -93,7 +93,7 @@ git checkout $Env:DRONE_COMMIT_SHA -b $Env:DRONE_COMMIT_BRANCH;
 const ClonePullRequest = `
 Set-Variable -Name "FLAGS" -Value ""
 if ($Env:PLUGIN_DEPTH) {
-    Set-Variable -Name "FLAGS" -Value "--depth=$Env:PLUGIN_DEPTH" 
+    Set-Variable -Name "FLAGS" -Value "--depth=$Env:PLUGIN_DEPTH"
 }
 
 if (!(Test-Path .git)) {
@@ -104,8 +104,8 @@ if (!(Test-Path .git)) {
 git fetch $FLAGS origin "+refs/heads/${Env:DRONE_COMMIT_BRANCH}:"
 git checkout $Env:DRONE_COMMIT_BRANCH
 
-git fetch origin $Env:DRONE_COMMIT_REF:
-git rebase $Env:DRONE_COMMIT_SHA
+git fetch origin "${Env:DRONE_COMMIT_REF}:"
+git merge $Env:DRONE_COMMIT_SHA
 `
 
 // Contents of clone-tag.ps1
@@ -123,3 +123,4 @@ if (!(Test-Path .git)) {
 git fetch $FLAGS origin "+refs/tags/${Env:DRONE_TAG}:"
 git checkout -qf FETCH_HEAD
 `
+
