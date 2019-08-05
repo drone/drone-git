@@ -93,6 +93,36 @@ steps:
 
 ---
 kind: pipeline
+type: ssh
+name: windows-1809-amd64
+
+platform:
+  os: windows
+
+server:
+  host:
+    from_secret: windows_1809_server
+  user:
+    from_secret: windows_1809_username
+  password:
+    from_secret: windows_1809_password
+
+steps:
+- name: docker
+  environment:
+    PASSWORD:
+      from_secret: docker_password
+  commands:
+  - docker login -u drone -p $PASSWORD
+  - docker build -f docker/Dockerfile.windows.1809 -t drone/git:windows-1809-amd64 .
+  - docker push drone/git:windows-1809-amd64
+  when:
+    event:
+    - push
+    - tag
+
+---
+kind: pipeline
 name: after
 
 platform:
@@ -118,5 +148,6 @@ depends_on:
 - linux-arm
 - linux-arm64
 - linux-amd64
+- windows-1809-amd64
 
 ...
