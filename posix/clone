@@ -53,6 +53,9 @@ export GIT_COMMITTER_EMAIL=${DRONE_COMMIT_AUTHOR_EMAIL}
 CLONE_TYPE=$DRONE_BUILD_EVENT
 case $DRONE_COMMIT_REF in
   refs/tags/* ) CLONE_TYPE=tag ;;
+  refs/pull/* ) CLONE_TYPE=pull_request ;;
+  refs/pull-request/* ) CLONE_TYPE=pull_request ;;
+  refs/merge-requests/* ) CLONE_TYPE=pull_request ;;
 esac
 
 case $CLONE_TYPE in
