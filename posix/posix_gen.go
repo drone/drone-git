@@ -9,11 +9,15 @@ if [[ ! -z "${DRONE_WORKSPACE}" ]]; then
 	cd ${DRONE_WORKSPACE}
 fi
 
+if [ -z "$HOME" ]; then
+	HOME=/root
+fi
+
 # if the netrc enviornment variables exist, write
 # the netrc file.
 
 if [[ ! -z "${DRONE_NETRC_MACHINE}" ]]; then
-	cat <<EOF > /root/.netrc
+	cat <<EOF > /$HOME/.netrc
 machine ${DRONE_NETRC_MACHINE}
 login ${DRONE_NETRC_USERNAME}
 password ${DRONE_NETRC_PASSWORD}
@@ -25,12 +29,12 @@ fi
 # known hosts file.
 
 if [[ ! -z "${SSH_KEY}" ]]; then
-	mkdir /root/.ssh
-	echo -n "$SSH_KEY" > /root/.ssh/id_rsa
-	chmod 600 /root/.ssh/id_rsa
+	mkdir /$HOME/.ssh
+	echo -n "$SSH_KEY" > /$HOME/.ssh/id_rsa
+	chmod 600 /$HOME/.ssh/id_rsa
 
-	touch /root/.ssh/known_hosts
-	chmod 600 /root/.ssh/known_hosts
+	touch /$HOME/.ssh/known_hosts
+	chmod 600 /$HOME/.ssh/known_hosts
 	ssh-keyscan -H ${DRONE_NETRC_MACHINE} > /etc/ssh/ssh_known_hosts 2> /dev/null
 fi
 
