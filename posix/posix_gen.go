@@ -10,8 +10,9 @@ if [[ ! -z "${DRONE_WORKSPACE}" ]]; then
 fi
 
 if [ -z "${HOME}" ]; then
-	HOME=/root
+	export HOME=/root
 fi
+export HOME
 
 # if the netrc enviornment variables exist, write
 # the netrc file.
