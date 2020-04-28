@@ -10,6 +10,19 @@ if [ ! -d .git ]; then
 	git remote add origin ${DRONE_REMOTE_URL}
 fi
 
+# the branch may be empty for certain event types,
+# such as github deployment events. If the branch
+# is empty we checkout the sha directly. Note that
+# we intentially omit depth flags to avoid failed
+# clones due to lack of history.
+if [[ -z "${DRONE_COMMIT_BRANCH}" ]]; then
+	set -e
+	set -x
+	git fetch origin
+	git checkout -qf ${DRONE_COMMIT_SHA}
+	exit 0
+fi
+
 set -e
 set -x
 
