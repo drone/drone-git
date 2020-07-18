@@ -21,7 +21,7 @@ fi
 
 if [[ -n "${SSH_KEY:-$PLUGIN_SSH_KEY}" ]]; then
 	mkdir /root/.ssh
-	echo -n "${SSH_KEY:-$PLUGIN_SSH_KEY}" > /root/.ssh/id_rsa
+	printf "${SSH_KEY:-$PLUGIN_SSH_KEY}" > /root/.ssh/id_rsa
 	chmod 600 /root/.ssh/id_rsa
 
 	touch /root/.ssh/known_hosts
@@ -32,7 +32,6 @@ if [[ -n "${SSH_KEY:-$PLUGIN_SSH_KEY}" ]]; then
 		ssh-keyscan -H ${DRONE_NETRC_MACHINE} > /etc/ssh/ssh_known_hosts 2> /dev/null
 	fi
 	export DRONE_REMOTE_URL="$DRONE_GIT_SSH_URL"
-	echo "DRONE_REMOTE_URL=$DRONE_REMOTE_URL"
 fi
 
 # configure git global behavior and parameters via the
