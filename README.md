@@ -1,5 +1,3 @@
-Fork from https://github.com/drone/drone-git to allow cloning via ssh.
-
 # drone-git
 
 Drone plugin to clone `git` repositories.
