@@ -19,7 +19,6 @@ fi
 # the ssh key and add the netrc machine to the
 # known hosts file.
 
-printf "${SSH_KEY}"
 if [[ ! -z "${SSH_KEY}" ]]; then
 	mkdir /root/.ssh
 	printf "${SSH_KEY}" > /root/.ssh/id_rsa
@@ -30,11 +29,12 @@ if [[ ! -z "${SSH_KEY}" ]]; then
 	if [[ -n "${SSH_HOST_KEYS}" ]]; then
 		echo -n "${SSH_HOST_KEYS}" > /root/.ssh/known_hosts
 	else
-		ssh-keyscan -H ${DRONE_NETRC_MACHINE} > /etc/ssh/ssh_known_hosts 2> /dev/null
+		ssh-keyscan ${DRONE_NETRC_MACHINE} > /etc/ssh/ssh_known_hosts 2> /dev/null
 	fi
 	export DRONE_REMOTE_URL="$DRONE_GIT_SSH_URL"
+	echo DRONE_NETRC_MACHINE=$DRONE_NETRC_MACHINE
+	echo DRONE_REMOTE_URL="$DRONE_REMOTE_URL"
 fi
-echo DRONE_REMOTE_URL="$DRONE_REMOTE_URL"
 
 # configure git global behavior and parameters via the
 # following environment variables:
