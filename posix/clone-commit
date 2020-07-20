@@ -6,8 +6,10 @@ if [[ ! -z "${PLUGIN_DEPTH}" ]]; then
 fi
 
 if [ ! -d .git ]; then
+	set -x
 	git init
 	git remote add origin ${DRONE_REMOTE_URL}
+	echo DRONE_REMOTE_URL=$DRONE_REMOTE_URL
 fi
 
 # the branch may be empty for certain event types,
