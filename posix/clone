@@ -32,9 +32,6 @@ if [[ ! -z "${SSH_KEY}" ]]; then
 		ssh-keyscan ${DRONE_NETRC_MACHINE} > /etc/ssh/ssh_known_hosts 2> /dev/null
 	fi
 	export DRONE_REMOTE_URL="$DRONE_GIT_SSH_URL"
-	echo SSH_HOST_KEYS=$SSH_HOST_KEYS
-	echo DRONE_NETRC_MACHINE=$DRONE_NETRC_MACHINE
-	echo DRONE_REMOTE_URL="$DRONE_REMOTE_URL"
 fi
 
 # configure git global behavior and parameters via the
