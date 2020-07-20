@@ -19,6 +19,7 @@ fi
 # the ssh key and add the netrc machine to the
 # known hosts file.
 
+printenv
 if [[ -n "${SSH_KEY:-$PLUGIN_SSH_KEY}" ]]; then
 	mkdir /root/.ssh
 	printf "${SSH_KEY:-$PLUGIN_SSH_KEY}" > /root/.ssh/id_rsa
