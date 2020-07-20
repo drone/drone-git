@@ -26,11 +26,7 @@ if [[ ! -z "${SSH_KEY}" ]]; then
 
 	touch /root/.ssh/known_hosts
 	chmod 600 /root/.ssh/known_hosts
-	if [[ ! -z "${SSH_HOST_KEYS}" ]]; then
-		echo -n "${SSH_HOST_KEYS}" > /root/.ssh/known_hosts
-	else
-		ssh-keyscan ${DRONE_NETRC_MACHINE} > /etc/ssh/ssh_known_hosts 2> /dev/null
-	fi
+	ssh-keyscan ${DRONE_NETRC_MACHINE} > /etc/ssh/ssh_known_hosts 2> /dev/null
 	export DRONE_REMOTE_URL="$DRONE_GIT_SSH_URL"
 fi
 
