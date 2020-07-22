@@ -27,11 +27,14 @@ if [[ ! -z "${SSH_KEY}" ]]; then
 	touch /root/.ssh/known_hosts
 	chmod 600 /root/.ssh/known_hosts
 
-	PORT=$(echo $DRONE_GIT_SSH_URL | sed 's/.*:\(\d*\).*/\1/')
-	if [[ -z "$PORT" ]]; then
-		ssh-keyscan $DRONE_NETRC_MACHINE > /root/.ssh/known_hosts 2> /dev/null
+	# DRONE_GIT_SSH_URL=git@github.com:slinstaedt/drone-plugin-base.git
+	# DRONE_GIT_SSH_URL=ssh://git@stash.integra.local:7999/eproc/eproc-api.git
+	HOST=$(echo $DRONE_GIT_SSH_URL | sed 's/.*[\/@]\(.*\):.*/\1/')
+	PORT=$(echo $DRONE_GIT_SSH_URL | sed 's/.*:\(\d*\)\/.*/\1/')
+	if [[ "$PORT" = "$DRONE_GIT_SSH_URL" ]]; then
+		ssh-keyscan $HOST > /root/.ssh/known_hosts 2> /dev/null
 	else
-		ssh-keyscan -p $PORT $DRONE_NETRC_MACHINE > /root/.ssh/known_hosts 2> /dev/null
+		ssh-keyscan -p $PORT $HOST > /root/.ssh/known_hosts 2> /dev/null
 	fi
 	export DRONE_REMOTE_URL="$DRONE_GIT_SSH_URL"
 fi
