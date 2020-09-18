@@ -69,3 +69,9 @@ tag)
 	clone-commit
 	;;
 esac
+
+if [[ -n "${CI}" ]]; then
+	if [[ -n "${CI_UIDGID}" ]]; then
+		chown -Rf ${CI_UIDGID} ./ 
+	fi
+fi
