@@ -58,14 +58,42 @@ case $DRONE_COMMIT_REF in
   refs/merge-requests/* ) CLONE_TYPE=pull_request ;;
 esac
 
+git_clone_retry(){
+	case $1 in
+	''|*[!1-9]*)
+		echo "DRONE_CLONE_RETRY defined but is not a number from 1-9: ${1}" 
+		;;
+	*)
+		n=0
+		until [ "$n" -ge "${1}" ]
+		do
+			$2 && break
+			n=$((n+1)) 
+		done
+		;;
+	esac
+}
+
 case $CLONE_TYPE in
 pull_request)
-	clone-pull-request
+	if [[ -z "${DRONE_CLONE_RETRY}" ]]; then
+		clone-pull-request
+	else 
+		git_clone_retry "${DRONE_CLONE_RETRY}" clone-pull-request
+	fi
 	;;
 tag)
-	clone-tag
+	if [[ -z "${DRONE_CLONE_RETRY}" ]]; then
+		clone-tag
+	else 
+		git_clone_retry "${DRONE_CLONE_RETRY}" clone-tag
+	fi
 	;;
 *)
-	clone-commit
+	if [[ -z "${DRONE_CLONE_RETRY}" ]]; then
+		clone-commit
+	else 
+		git_clone_retry "${DRONE_CLONE_RETRY}" clone-commit
+	fi
 	;;
 esac
