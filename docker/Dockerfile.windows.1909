@@ -4,8 +4,19 @@ FROM mcr.microsoft.com/windows/servercore:1909 AS git
 SHELL ["powershell.exe", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
-    Invoke-WebRequest -UseBasicParsing https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/MinGit-2.21.0-64-bit.zip -OutFile git.zip; `
-    Expand-Archive git.zip -DestinationPath C:\git;
+    Invoke-WebRequest -UseBasicParsing https://github.com/activescott/lessmsi/releases/download/v1.6.91/lessmsi-v1.6.91.zip -OutFile $env:TEMP\lessmsi.zip; `
+    Expand-Archive $env:TEMP\lessmsi.zip -DestinationPath $env:TEMP;
+
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
+    Invoke-WebRequest -UseBasicParsing https://www.7-zip.org/a/7z1604-x64.msi -OutFile $env:TEMP\7z.msi; `
+    cd $env:TEMP; `
+    .\lessmsi.exe x 7z.msi;
+
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
+    Invoke-WebRequest -UseBasicParsing https://github.com/git-for-windows/git/releases/download/v2.29.0.windows.1/Git-2.29.0-64-bit.tar.bz2 -OutFile $env:TEMP\git.tar.bz2; `
+    cd $env:TEMP; `
+    & "./7z/SourceDir/Files/7-Zip/7z.exe" x git.tar.bz2; `
+    & "./7z/SourceDir/Files/7-Zip/7z.exe" x git.tar -oc:\git;
 
 FROM mcr.microsoft.com/powershell:nanoserver-1909
 COPY --from=git /git /git
