@@ -23,11 +23,16 @@ if [[ -z "${DRONE_COMMIT_BRANCH}" ]]; then
 	exit 0
 fi
 
+# the commit sha may be empty for builds that are
+# manually triggered in Harness CI Enterprise. If
+# the commit is empty we clone the branch. Note that
+# we intentially omit depth flags to avoid failed
+# clones due to lack of history.
 if [[ -z "${DRONE_COMMIT_SHA}" ]]; then
 	set -e
 	set -x
-	git fetch ${FLAGS} origin +refs/heads/${DRONE_COMMIT_BRANCH}:
-	git checkout -b ${DRONE_COMMIT_BRANCH}
+	git fetch origin +refs/heads/${DRONE_COMMIT_BRANCH}:
+	git checkout -b ${DRONE_COMMIT_BRANCH} origin/${DRONE_COMMIT_BRANCH}
 	exit 0
 fi
 
