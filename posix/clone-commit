@@ -23,6 +23,14 @@ if [[ -z "${DRONE_COMMIT_BRANCH}" ]]; then
 	exit 0
 fi
 
+if [[ -z "${DRONE_COMMIT_SHA}" ]]; then
+	set -e
+	set -x
+	git fetch ${FLAGS} origin +refs/heads/${DRONE_COMMIT_BRANCH}:
+	git checkout -b ${DRONE_COMMIT_BRANCH}
+	exit 0
+fi
+
 set -e
 set -x
 
