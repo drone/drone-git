@@ -15,13 +15,22 @@ password ${DRONE_NETRC_PASSWORD}
 EOF
 fi
 
+# Either of SSH_KEY or DRONE_SSH_KEY environment variable represents ssh key.
+# DRONE_SSH_KEY variable is introduced to avoid collision with the user provided
+# environment variable which can be same as SSH_KEY
+
+ssh_key=$DRONE_SSH_KEY
+if [[ -z "${ssh_key}" ]]; then
+	ssh_key=$SSH_KEY
+fi
+
 # if the ssh_key environment variable exists, write
 # the ssh key and add the netrc machine to the
 # known hosts file.
 
-if [[ ! -z "${SSH_KEY}" ]]; then
+if [[ ! -z "${ssh_key}" ]]; then
 	mkdir /root/.ssh
-	echo -n "$SSH_KEY" > /root/.ssh/id_rsa
+	echo -n "$ssh_key" > /root/.ssh/id_rsa
 	chmod 600 /root/.ssh/id_rsa
 
 	touch /root/.ssh/known_hosts
