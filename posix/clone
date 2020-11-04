@@ -21,12 +21,22 @@ fi
 
 if [[ ! -z "${SSH_KEY}" ]]; then
 	mkdir /root/.ssh
-	echo -n "$SSH_KEY" > /root/.ssh/id_rsa
+	printf "${SSH_KEY}" > /root/.ssh/id_rsa
 	chmod 600 /root/.ssh/id_rsa
 
 	touch /root/.ssh/known_hosts
 	chmod 600 /root/.ssh/known_hosts
-	ssh-keyscan -H ${DRONE_NETRC_MACHINE} > /etc/ssh/ssh_known_hosts 2> /dev/null
+
+	# DRONE_GIT_SSH_URL=git@github.com:slinstaedt/drone-plugin-base.git
+	# DRONE_GIT_SSH_URL=ssh://git@stash.integra.local:7999/eproc/eproc-api.git
+	HOST=$(echo $DRONE_GIT_SSH_URL | sed 's/.*[\/@]\(.*\):.*/\1/')
+	PORT=$(echo $DRONE_GIT_SSH_URL | sed 's/.*:\(\d*\)\/.*/\1/')
+	if [[ "$PORT" = "$DRONE_GIT_SSH_URL" ]]; then
+		ssh-keyscan $HOST > /root/.ssh/known_hosts 2> /dev/null
+	else
+		ssh-keyscan -p $PORT $HOST > /root/.ssh/known_hosts 2> /dev/null
+	fi
+	export DRONE_REMOTE_URL="$DRONE_GIT_SSH_URL"
 fi
 
 # configure git global behavior and parameters via the
