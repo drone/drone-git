@@ -19,9 +19,9 @@ fi
 # the ssh key and add the netrc machine to the
 # known hosts file.
 
-if [[ ! -z "${SSH_KEY}" ]]; then
+if [[ ! -z "${DRONE_SSH_KEY}" ]]; then
 	mkdir /root/.ssh
-	echo -n "$SSH_KEY" > /root/.ssh/id_rsa
+	echo -n "$DRONE_SSH_KEY" > /root/.ssh/id_rsa
 	chmod 600 /root/.ssh/id_rsa
 
 	touch /root/.ssh/known_hosts
