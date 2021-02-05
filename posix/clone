@@ -29,6 +29,18 @@ if [[ ! -z "${DRONE_SSH_KEY}" ]]; then
 	ssh-keyscan -H ${DRONE_NETRC_MACHINE} > /etc/ssh/ssh_known_hosts 2> /dev/null
 fi
 
+# AWS codecommit support using AWS access key & secret key
+# Refer: https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html
+
+if [[ ! -z "$DRONE_AWS_ACCESS_KEY" ]]; then
+	aws configure set aws_access_key_id $DRONE_AWS_ACCESS_KEY
+	aws configure set aws_secret_access_key $DRONE_AWS_SECRET_KEY
+	aws configure set default.region $DRONE_AWS_REGION
+
+	git config --global credential.helper '!aws codecommit credential-helper $@'
+	git config --global credential.UseHttpPath true
+fi
+
 # configure git global behavior and parameters via the
 # following environment variables:
 
