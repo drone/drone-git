@@ -166,7 +166,7 @@ func TestPullRequest(t *testing.T) {
 	cmd.Dir = local
 	cmd.Env = []string{
 		fmt.Sprintf("DRONE_COMMIT_REF=%s", "refs/pull/14596/head"),
-		fmt.Sprintf("DRONE_COMMIT_BRANCH=%s", "master"),
+		fmt.Sprintf("DRONE_COMMIT_BRANCH=%s", "main"),
 		fmt.Sprintf("DRONE_COMMIT_SHA=%s", "26923a8f37933ccc23943de0d4ebd53908268582"),
 		fmt.Sprintf("DRONE_WORKSPACE=%s", local),
 		fmt.Sprintf("DRONE_REMOTE_URL=%s", remote),
@@ -195,7 +195,7 @@ func TestPullRequest(t *testing.T) {
 		t.Errorf("Want commit %s, got %s", want, got)
 	}
 
-	if want, got := "master", branch; got != want {
+	if want, got := "main", branch; got != want {
 		t.Errorf("Want branch %s, got %s", want, got)
 	}
 
@@ -230,14 +230,14 @@ var tests = []struct {
 }{
 	{
 		commit: "9cd29dca0a98f76df94d66493ee54788a18190a0",
-		branch: "master",
+		branch: "main",
 		tag:    "v1.0.0",
 		file:   "hello.txt",
 		text:   "hi world\n",
 	},
 	{
 		commit: "bbdf5d4028a6066431f59fcd8d83afff610a55ae",
-		branch: "master",
+		branch: "main",
 		tag:    "v1.1.0",
 		file:   "hello.txt",
 		text:   "hello world\n",
