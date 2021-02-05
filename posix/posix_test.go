@@ -230,14 +230,14 @@ var tests = []struct {
 }{
 	{
 		commit: "9cd29dca0a98f76df94d66493ee54788a18190a0",
-		branch: "main",
+		branch: "master",
 		tag:    "v1.0.0",
 		file:   "hello.txt",
 		text:   "hi world\n",
 	},
 	{
 		commit: "bbdf5d4028a6066431f59fcd8d83afff610a55ae",
-		branch: "main",
+		branch: "master",
 		tag:    "v1.1.0",
 		file:   "hello.txt",
 		text:   "hello world\n",
