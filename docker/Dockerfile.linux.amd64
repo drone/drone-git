@@ -1,9 +1,5 @@
 FROM alpine:3.12
-RUN apk add --no-cache ca-certificates git git-lfs openssh curl perl
-RUN apk update && apk add git groff python3 python3-dev py3-pip py3-six py3-urllib3 py3-colorama build-base libffi-dev openssl-dev && \
-  pip install 'awscli==1.19.5' && \
-  apk del python3-dev py3-pip build-base libffi-dev openssl-dev && \
-  rm -rf /var/cache/apk/*
+RUN apk add --no-cache ca-certificates git git-lfs openssh curl perl aws-cli
 RUN aws --version
 
 ADD posix/* /usr/local/bin/
