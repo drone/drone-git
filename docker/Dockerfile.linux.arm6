@@ -1,5 +1,5 @@
-FROM arm32v6/alpine:3.12
-RUN apk add --no-cache ca-certificates git=2.26.2-r0 git-lfs=2.11.0-r0 openssh curl perl
+FROM arm32v6/alpine:3.13
+RUN apk add --no-cache ca-certificates git git-lfs openssh curl perl
 
 ADD posix/* /usr/local/bin/
 ENTRYPOINT ["/usr/local/bin/clone"]
