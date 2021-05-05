@@ -5,11 +5,19 @@ if [[ ! -z "${DRONE_WORKSPACE}" ]]; then
 fi
 
 # if the home directory is not set (which should
-# never be the case) we should set to /root
+# never be the case) we default to /root
 
 if [[ -z "${HOME}" ]]; then
 	echo "HOME directory not set; default to /root"
 	export HOME=/root
+fi
+
+# if the home directory does not exist it should
+# be created.
+
+if [ ! -d "${HOME}" ]; then
+	echo "HOME directory does not exist; creating HOME"
+	mkdir -p ${HOME}
 fi
 
 # if the netrc enviornment variables exist, write
