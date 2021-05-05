@@ -16,7 +16,7 @@ fi
 # be created.
 
 if [ ! -d "${HOME}" ]; then
-	echo "HOME directory does not exist; creating HOME"
+	echo "HOME directory does not exist; creating ${HOME}"
 	mkdir -p ${HOME}
 fi
 
