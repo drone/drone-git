@@ -5,5 +5,6 @@ ADD posix/* /usr/local/bin/
 RUN adduser -g Drone -s /bin/sh -D -u 1000 drone
 RUN echo 'drone ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/drone
 USER drone:drone
+RUN chmod -R 777 /home/drone
 
 ENTRYPOINT ["/usr/local/bin/clone"]

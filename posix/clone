@@ -14,7 +14,6 @@ fi
 
 if [ "$HOME" != "/home/drone" ]; then
 	export HOME=/home/drone
-	sudo chmod 766 /home/drone
 fi
 
 # if the home directory does not exist it should
