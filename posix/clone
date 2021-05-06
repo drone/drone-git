@@ -1,15 +1,20 @@
 #!/bin/sh
 
 if [[ ! -z "${DRONE_WORKSPACE}" ]]; then
+	if [[ -n "${CI}" ]]; then
+		sudo mkdir -p ${DRONE_WORKSPACE}
+		sudo chown drone:drone ${DRONE_WORKSPACE}
+	else
+		mkdir -p ${DRONE_WORKSPACE}
+	fi
 	cd ${DRONE_WORKSPACE}
 fi
 
-# if the home directory is not set (which should
-# never be the case) we default to /root
+# we default home directory to /home/drone
 
-if [[ -z "${HOME}" ]]; then
-	echo "HOME directory not set; default to /root"
-	export HOME=/root
+if [ "$HOME" != "/home/drone" ]; then
+	export HOME=/home/drone
+	sudo chmod 766 /home/drone
 fi
 
 # if the home directory does not exist it should
