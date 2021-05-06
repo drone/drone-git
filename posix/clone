@@ -1,27 +1,26 @@
 #!/bin/sh
 
-if [[ ! -z "${DRONE_WORKSPACE}" ]]; then
-	if [[ -n "${CI}" ]]; then
-		sudo mkdir -p ${DRONE_WORKSPACE}
-		sudo chown drone:drone ${DRONE_WORKSPACE}
-	else
-		mkdir -p ${DRONE_WORKSPACE}
-	fi
+if [[ -n "${DRONE_WORKSPACE}" ]]; then
+	echo "[DEBUG] creating drone workspace"
+
+	# ensure the unprivileged drone user can write
+	# to the workspace. This is required because
+	# the workspace is a docker volume and is owned
+	# by root.
+	sudo mkdir -p ${DRONE_WORKSPACE}
+	sudo chown drone:drone ${DRONE_WORKSPACE}
+
+	# ensure the workspace is the current working
+	# directory. This should already be the case,
+	# but we cd just to be safe.
 	cd ${DRONE_WORKSPACE}
 fi
 
-# we default home directory to /home/drone
+# force the home directory path.
 
 if [ "$HOME" != "/home/drone" ]; then
+	echo "[DEBUG] setting default home directory"
 	export HOME=/home/drone
-fi
-
-# if the home directory does not exist it should
-# be created.
-
-if [ ! -d "${HOME}" ]; then
-	echo "HOME directory does not exist; creating ${HOME}"
-	mkdir -p ${HOME}
 fi
 
 # if the netrc enviornment variables exist, write
