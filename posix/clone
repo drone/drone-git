@@ -1,8 +1,6 @@
 #!/bin/sh
 
 if [[ -n "${DRONE_WORKSPACE}" ]]; then
-	echo "[DEBUG] creating drone workspace"
-
 	# ensure the unprivileged drone user can write
 	# to the workspace. This is required because
 	# the workspace is a docker volume and is owned
