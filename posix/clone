@@ -5,8 +5,8 @@ if [[ -n "${DRONE_WORKSPACE}" ]]; then
 	# to the workspace. This is required because
 	# the workspace is a docker volume and is owned
 	# by root.
-	sudo mkdir -p ${DRONE_WORKSPACE}
-	sudo chown drone:drone ${DRONE_WORKSPACE}
+	# sudo mkdir -p ${DRONE_WORKSPACE}
+	# sudo chown drone:drone ${DRONE_WORKSPACE}
 
 	# ensure the workspace is the current working
 	# directory. This should already be the case,
@@ -16,10 +16,10 @@ fi
 
 # force the home directory path.
 
-if [ "$HOME" != "/home/drone" ]; then
-	echo "[DEBUG] setting default home directory"
-	export HOME=/home/drone
-fi
+# if [ "$HOME" != "/home/drone" ]; then
+# 	echo "[DEBUG] setting default home directory"
+# 	export HOME=/home/drone
+# fi
 
 # if the netrc enviornment variables exist, write
 # the netrc file.
