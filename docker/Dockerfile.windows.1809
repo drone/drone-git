@@ -6,6 +6,7 @@ SHELL ["powershell.exe", "-Command", "$ErrorActionPreference = 'Stop'; $Progress
 RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
     Invoke-WebRequest -UseBasicParsing https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/MinGit-2.21.0-64-bit.zip -OutFile git.zip; `
     Expand-Archive git.zip -DestinationPath C:\git;
+RUN C:\git\cmd\git.exe config --system core.autocrlf false
 
 FROM mcr.microsoft.com/powershell:nanoserver-1809
 COPY --from=git /git /git
