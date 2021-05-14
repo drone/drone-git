@@ -1,20 +1,25 @@
 # escape=`
-
-FROM mcr.microsoft.com/windows/servercore:1903 AS git
-SHELL ["powershell.exe", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-
-RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
-    Invoke-WebRequest -UseBasicParsing https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/MinGit-2.21.0-64-bit.zip -OutFile git.zip; `
-    Expand-Archive git.zip -DestinationPath C:\git;
-
 FROM mcr.microsoft.com/powershell:nanoserver-1903
-COPY --from=git /git /git
+USER ContainerAdministrator
+
+ENV PATH="$PATH;C:\git\cmd" `
+    GIT_VERSION="2.23.0.1"
+
+SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+RUN $major, $minor, $patch, $build = $env:GIT_VERSION.split('.'); `
+    if ($build -ne '1') { `
+        $exePath = ('MinGit-{0}.{1}.{2}.{3}-busybox-64-bit.zip' -f $major, $minor, $patch, $build); `
+    } `
+    else { `
+        $exePath = ('MinGit-{0}.{1}.{2}-busybox-64-bit.zip' -f $major, $minor, $patch); `
+    } `
+    $url = ('https://github.com/git-for-windows/git/releases/download/v{0}.{1}.{2}.windows.{3}/{4}' -f $major, $minor, $patch, $build, $exePath); `
+    Invoke-WebRequest -UseBasicParsing $url -OutFile git.zip; `
+    Expand-Archive git.zip -DestinationPath C:\git; `
+    Remove-Item git.zip; `
+    git --version;
 
 ADD windows/* /bin/
 
-# https://github.com/PowerShell/PowerShell/issues/6211#issuecomment-367477137
-USER ContainerAdministrator
-RUN setx /M PATH "%PATH%;C:\Program Files\PowerShell"
-
-SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 CMD [ "pwsh", "C:\\bin\\clone.ps1" ]
