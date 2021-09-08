@@ -12,6 +12,7 @@ def main(ctx):
     linux('amd64'),
     windows('1903'),
     windows('1809'),
+    windows('2022'),
   ]
 
   after = manifest()
