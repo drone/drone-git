@@ -10,5 +10,4 @@ RUN `
 
 ADD windows/* /bin/
 
-SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 CMD [ "pwsh", "C:\\bin\\clone.ps1" ]
