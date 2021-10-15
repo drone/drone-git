@@ -10,4 +10,4 @@ RUN `
 
 ADD windows/* /bin/
 
-CMD [ "pwsh", "C:\\bin\\clone.ps1" ]
+CMD ["pwsh", "/bin/clone.ps1"]
