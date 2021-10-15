@@ -8,6 +8,8 @@ RUN `
   && tar -C c:\git -oxzf tmp/file.zip`
   && rmdir /Q /S tmp
 
+RUN setx PATH "%PATH%;/git/cmd;/git/mingw64/bin;/git/usr/bin"
+
 ADD windows/* /bin/
 
 CMD ["pwsh", "/bin/clone.ps1"]
