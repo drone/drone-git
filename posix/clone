@@ -87,14 +87,37 @@ case $DRONE_COMMIT_REF in
   refs/merge-requests/* ) CLONE_TYPE=pull_request ;;
 esac
 
+git_clone_retry(){
+	retries="${PLUGIN_RETRIES}"
+	if [[ -z "${retries}" ]]; then
+		return $1
+	fi
+
+	echo "Cloning with ${PLUGIN_RETRIES} retries"
+
+	case $retries in
+	''|*[!1-9]*)
+		echo "PLUGIN_RETRIES defined but is not a number from 1-9: ${retries}" 
+		;;
+	*)
+		n=0
+		until [ "$n" -ge "${retries}" ]
+		do
+			$1 && break
+			n=$((n+1)) 
+		done
+		;;
+	esac
+}
+
 case $CLONE_TYPE in
 pull_request)
-	clone-pull-request
+	git_clone_retry clone-pull-request
 	;;
 tag)
-	clone-tag
+	git_clone_retry clone-tag
 	;;
 *)
-	clone-commit
+	git_clone_retry clone-commit
 	;;
 esac
