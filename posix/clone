@@ -88,26 +88,20 @@ case $DRONE_COMMIT_REF in
 esac
 
 git_clone_retry(){
-	retries="${PLUGIN_RETRIES}"
-	if [[ -z "${retries}" ]]; then
-		return $1
+	retries="${PLUGIN_RETRIES:-0}"
+	if [ -n "${retries##*[0-9]*}" ] || [ "${retries}" -lt 0 ]; then
+		echo "PLUGIN_RETRIES defined but is not a number: ${retries}" >&2
+		exit 1
 	fi
 
-	echo "Cloning with ${PLUGIN_RETRIES} retries"
-
-	case $retries in
-	''|*[!1-9]*)
-		echo "PLUGIN_RETRIES defined but is not a number from 1-9: ${retries}" 
-		;;
-	*)
-		n=0
-		until [ "$n" -ge "${retries}" ]
-		do
-			$1 && break
-			n=$((n+1)) 
-		done
-		;;
-	esac
+	echo "Cloning with ${retries} retries"
+	n=0
+	until [ "$n" -gt "${retries}" ]; do
+		$1 && return
+		n=$((n+1))
+	done
+	
+	exit 1
 }
 
 case $CLONE_TYPE in
