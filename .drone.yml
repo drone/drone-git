@@ -102,6 +102,38 @@ steps:
 ---
 kind: pipeline
 type: ssh
+name: windows-2022-amd64
+
+platform:
+  os: windows
+
+server:
+  host:
+    from_secret: windows_server_2022
+  password:
+    from_secret: windows_password
+  user:
+    from_secret: windows_username
+
+steps:
+- name: build
+  commands:
+  - docker login -u $env:USERNAME -p $env:PASSWORD
+  - docker build -f docker/Dockerfile.windows.2022 -t drone/git:windows-2022-amd64 .
+  - docker push drone/git:windows-2022-amd64
+  environment:
+    USERNAME:
+      from_secret: docker_username
+    PASSWORD:
+      from_secret: docker_password
+
+trigger:
+  event:
+  - push
+
+---
+kind: pipeline
+type: ssh
 name: windows-1909-amd64
 
 platform:
@@ -221,6 +253,7 @@ depends_on:
 - linux-amd64
 - linux-arm64
 - linux-arm
+- windows-2022-amd64
 - windows-1909-amd64
 - windows-1903-amd64
 - windows-1809-amd64

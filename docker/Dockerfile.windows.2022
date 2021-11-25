@@ -1,0 +1,15 @@
+# escape=`
+
+FROM mcr.microsoft.com/powershell:nanoserver-ltsc2022
+
+RUN `
+  mkdir tmp && mkdir git`
+	&& curl -sSfLo tmp/file.zip https://github.com/git-for-windows/git/releases/download/v2.33.0.windows.2/MinGit-2.33.0.2-64-bit.zip `
+  && tar -C c:\git -oxzf tmp/file.zip`
+  && rmdir /Q /S tmp
+
+RUN setx PATH "%PATH%;/git/cmd;/git/mingw64/bin;/git/usr/bin"
+
+ADD windows/* /bin/
+
+CMD ["pwsh", "/bin/clone.ps1"]

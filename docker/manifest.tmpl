@@ -53,3 +53,9 @@ manifests:
       architecture: amd64
       os: windows
       version: 1909
+  -
+    image: drone/git:{{#if build.tag}}{{trimPrefix "v" build.tag}}-{{/if}}windows-2022-amd64
+    platform:
+      architecture: amd64
+      os: windows
+      version: 2022
