@@ -1,9 +1,5 @@
 $ErrorActionPreference = 'Stop';
 
-# HACK: no clue how to set the PATH inside the Dockerfile,
-# so am setting it here instead. This is not idea.
-$Env:PATH += ';C:\git\cmd;C:\git\mingw64\bin;C:\git\usr\bin'
-
 # if the workspace is set we should make sure
 # it is the current working directory.
 
