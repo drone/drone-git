@@ -1,5 +1,6 @@
 FROM alpine:3.12
 RUN apk add --no-cache ca-certificates git git-lfs openssh curl perl aws-cli sudo
+RUN git config --global http.version HTTP/1.1
 
 ADD posix/* /usr/local/bin/
 
