@@ -101,6 +101,42 @@ steps:
 
 ---
 kind: pipeline
+type: docker
+name: linux-s390x
+
+platform:
+  arch: amd64
+  os: linux
+
+steps:
+- name: build
+  image: golang:1.10
+  commands:
+  - cd posix
+  - tar -xf fixtures.tar -C /
+  - go test -v
+
+- name: publish
+  image: thegeeklab/drone-docker-buildx
+  privileged: true
+  settings:
+    dockerfile: docker/Dockerfile.linux.s390x
+    repo: drone/git
+    platforms:
+      - linux/s390x
+    auto_tag: "true"
+    auto_tag_suffix: linux-s390x
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+  when:
+    event:
+    - push
+    - tag
+
+---
+kind: pipeline
 type: ssh
 name: windows-1909-amd64
 
@@ -221,6 +257,7 @@ depends_on:
 - linux-amd64
 - linux-arm64
 - linux-arm
+- linux-s390x
 - windows-1909-amd64
 - windows-1903-amd64
 - windows-1809-amd64
