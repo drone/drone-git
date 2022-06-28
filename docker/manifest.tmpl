@@ -18,6 +18,11 @@ manifests:
       architecture: arm64
       os: linux
   -
+    image: drone/git:{{#if build.tag}}{{trimPrefix "v" build.tag}}-{{/if}}linux-s390x
+    platform:
+      architecture: s390x
+      os: linux
+  -
     image: drone/git:{{#if build.tag}}{{trimPrefix "v" build.tag}}-{{/if}}linux-arm
     platform:
       variant: v7

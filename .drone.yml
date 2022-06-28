@@ -101,6 +101,38 @@ steps:
 
 ---
 kind: pipeline
+type: vm
+name: linux-s390x
+
+pool:
+  use: ubuntu-20.04
+
+steps:
+- name: publish
+  commands:
+    - apt-get update
+    - apt-get install -y jq
+    - mkdir -p ~/.docker/cli-plugins
+    - export BUILDX_URL=$(curl https://api.github.com/repos/docker/buildx/releases/latest | jq -r '.assets[].browser_download_url' | grep linux-amd64)
+    - wget $BUILDX_URL -O ~/.docker/cli-plugins/docker-buildx
+    - chmod +x ~/.docker/cli-plugins/docker-buildx
+    - ls -al ~/.docker/cli-plugins/
+    - apt-get install -y binfmt-support qemu-user-static
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    - docker login -u $USERNAME -p $PASSWORD
+    - docker buildx build --rm=true -f docker/Dockerfile.linux.s390x . --push --pull=true --platform linux/s390x -t drone/git:linux-s390x
+  environment:
+    PASSWORD:
+      from_secret: docker_password
+    USERNAME:
+      from_secret: docker_username
+  when:
+    event:
+    - push
+    - tag
+
+---
+kind: pipeline
 type: ssh
 name: windows-1909-amd64
 
@@ -221,6 +253,7 @@ depends_on:
 - linux-amd64
 - linux-arm64
 - linux-arm
+- linux-s390x
 - windows-1909-amd64
 - windows-1903-amd64
 - windows-1809-amd64
