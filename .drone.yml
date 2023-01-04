@@ -111,7 +111,7 @@ platform:
   arch: amd64
 
 pool:
-  use: windows
+  use: windows-2022
 
 steps:
   - name: docker
