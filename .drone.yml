@@ -87,7 +87,7 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: docker/Dockerfile.windows.1809
-      repo: drone/git:windows-1809-amd64
+      repo: drone/git
       username:
         from_secret: docker_username
       password:
@@ -118,7 +118,7 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: docker/Dockerfile.windows.ltsc2022
-      repo: drone/git:windows-ltsc2022-amd64
+      repo: drone/git
       username:
         from_secret: docker_username
       password:
