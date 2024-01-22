@@ -17,7 +17,7 @@ ADD windows/* /bin/
 
 # https://github.com/PowerShell/PowerShell/issues/6211#issuecomment-367477137
 USER ContainerAdministrator
-RUN setx /M PATH "%PATH%;C:\Program Files\PowerShell;c:\git\cmd;c:\git\lfs\git-lfs-2.12.0"
+RUN setx /M PATH "%PATH%;C:\Program Files\PowerShell;c:\git\lfs\;c:\git\cmd"
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 CMD [ "pwsh", "C:\\bin\\clone.ps1" ]
