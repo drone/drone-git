@@ -4,20 +4,22 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022 AS git
 SHELL ["powershell.exe", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
-    Invoke-WebRequest -UseBasicParsing https://github.com/git-for-windows/git/releases/download/v2.43.0.windows.1/MinGit-2.43.0-64-bit.zip -OutFile git.zip; `
+    Invoke-WebRequest -UseBasicParsing https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/MinGit-2.21.0-64-bit.zip -OutFile git.zip; `
     Expand-Archive git.zip -DestinationPath C:\git;
 RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; `
-    Invoke-WebRequest -UseBasicParsing  https://github.com/git-lfs/git-lfs/releases/download/v3.4.1/git-lfs-windows-amd64-v3.4.1.zip -OutFile git-lfs.zip; `
+    Invoke-WebRequest -UseBasicParsing  https://github.com/git-lfs/git-lfs/releases/download/v2.12.0/git-lfs-windows-amd64-v2.12.0.zip -OutFile git-lfs.zip; `
     Expand-Archive git-lfs.zip -DestinationPath C:\git\lfs;
 
-FROM mcr.microsoft.com/powershell:nanoserver-ltsc2022
+FROM mcr.microsoft.com/powershell:windowsserver-ltsc2022
 COPY --from=git /git /git
 
 ADD windows/* /bin/
 
 # https://github.com/PowerShell/PowerShell/issues/6211#issuecomment-367477137
 USER ContainerAdministrator
-RUN setx /M PATH "%PATH%;C:\Program Files\PowerShell"
+RUN setx /M PATH "%PATH%;C:\Program Files\PowerShell;c:\git\cmd;c:\git\lfs\git-lfs-2.12.0"
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 CMD [ "pwsh", "C:\\bin\\clone.ps1" ]
+
+LABEL org.opencontainers.image.source=https://github.com/johanvdw/drone-git/

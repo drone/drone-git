@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Stop';
 
 # HACK: no clue how to set the PATH inside the Dockerfile,
 # so am setting it here instead. This is not ideal.
-$Env:PATH += ';C:\git\cmd;C:\git\mingw64\bin;C:\git\usr\bin;C:\git\lfs'
+$Env:PATH += ';C:\git\cmd;C:\git\mingw64\bin;C:\git\usr\bin;c:\git\lfs\git-lfs-2.12.0'
 
 # if the workspace is set we should make sure
 # it is the current working directory.
@@ -20,6 +20,13 @@ machine $Env:DRONE_NETRC_MACHINE
 login $Env:DRONE_NETRC_USERNAME
 password $Env:DRONE_NETRC_PASSWORD
 "@ > (Join-Path $Env:USERPROFILE '_netrc');
+}
+if ($Env:DRONE_NETRC_MACHINE) {
+@"
+machine $Env:DRONE_NETRC_MACHINE
+login $Env:DRONE_NETRC_USERNAME
+password $Env:DRONE_NETRC_PASSWORD
+"@ > (Join-Path $Env:USERPROFILE '.netrc');
 }
 
 # configure git global behavior and parameters via the
