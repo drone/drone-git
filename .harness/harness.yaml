@@ -100,7 +100,7 @@ pipeline:
                         repo: plugins/git
                         tags:
                           - linux-amd64
-                        caching: true
+                        caching: false
                         dockerfile: docker/Dockerfile.linux.amd64
                       when:
                         stageStatus: Success
@@ -164,7 +164,7 @@ pipeline:
                         repo: plugins/git
                         tags:
                           - linux-arm64
-                        caching: true
+                        caching: false
                         dockerfile: docker/Dockerfile.linux.arm64
                       when:
                         stageStatus: Success
@@ -287,3 +287,4 @@ pipeline:
                     condition: <+codebase.build.type> == "branch" || <+codebase.build.type> == "tag"
           buildIntelligence:
             enabled: false
+  allowStageExecutions: true
