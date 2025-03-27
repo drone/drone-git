@@ -88,17 +88,24 @@ case $DRONE_COMMIT_REF in
 esac
 
 git_clone_retry(){
-	retries="${PLUGIN_RETRIES:-0}"
+	retries="${PLUGIN_RETRIES:-5}"
+        timeout="${PLUGIN_TIMEOUT:-300}"
 	if [ -n "${retries##*[0-9]*}" ] || [ "${retries}" -lt 0 ]; then
 		echo "PLUGIN_RETRIES defined but is not a number: ${retries}" >&2
 		exit 1
 	fi
+	if [ -n "${timeout##*[0-9]*}" ] || [ "${timeout}" -lt 0 ]; then
+		echo "PLUGIN_TIMEOUT defined but is not a number: ${timeout}" >&2
+		exit 1
+	fi
 
-	echo "Cloning with ${retries} retries"
+	echo "Cloning with ${retries} retries, ${timeout}s timeout"
 	n=0
-	until [ "$n" -gt "${retries}" ]; do
-		$1 && return
-		n=$((n+1))
+        until [ "$n" -gt "${retries}" ]; do
+                echo "$DRONE_STAGE_MACHINE attempt $((n+1))"
+                timeout $timeout $1 && return
+                sleep 15
+                n=$((n+1))
 	done
 	
 	exit 1
