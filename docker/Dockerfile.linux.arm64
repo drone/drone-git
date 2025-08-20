@@ -1,4 +1,4 @@
-FROM arm64v8/alpine:3.12
+FROM arm64v8/alpine:3.20.7
 RUN apk add --no-cache ca-certificates git git-lfs openssh curl perl aws-cli sudo
 
 ADD posix/* /usr/local/bin/
